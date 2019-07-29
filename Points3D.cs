@@ -34,10 +34,15 @@ namespace brab.colmap
         }
     }
 
+    public interface Points3D
+    {
+        IEnumerable<Point3D> GetPoints();
+    }
+
     ///
     /// Note: parsing track for each point is not implemented
     ///
-    public class Points3DTxt
+    public class Points3DTxt : Points3D
     {
         TextFile TxtFile;
 
@@ -46,7 +51,7 @@ namespace brab.colmap
             TxtFile = new TextFile(path);
         }
 
-        public IEnumerable<Point3D> Points()
+        public IEnumerable<Point3D> GetPoints()
         {
             var iter = TxtFile.Lines().GetEnumerator();
             while (iter.MoveNext())
@@ -56,7 +61,7 @@ namespace brab.colmap
         }
     }
 
-    public class Points3DBin
+    public class Points3DBin : Points3D
     {
         string FilePath;
 
@@ -65,7 +70,7 @@ namespace brab.colmap
             FilePath = path;
         }
 
-        public IEnumerable<Point3D> Points()
+        public IEnumerable<Point3D> GetPoints()
         {
             using (var reader = new BinaryReader(File.Open(FilePath, FileMode.Open)))
             {

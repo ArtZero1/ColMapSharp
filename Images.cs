@@ -35,7 +35,12 @@ namespace brab.colmap
         }
     }
 
-    public class ImagesTxt
+    public interface Images
+    {
+        IEnumerable<Image> GetImages();
+    }
+
+    public class ImagesTxt : Images
     {
         TextFile TxtFile;
 
@@ -44,7 +49,7 @@ namespace brab.colmap
             TxtFile = new TextFile(path);
         }
 
-        public IEnumerable<Image> Images()
+        public IEnumerable<Image> GetImages()
         {
             var iter = TxtFile.Lines().GetEnumerator();
             while (iter.MoveNext())
@@ -55,7 +60,7 @@ namespace brab.colmap
         }
     }
 
-    public class ImagesBin
+    public class ImagesBin : Images
     {
         string FilePath;
 
@@ -64,7 +69,7 @@ namespace brab.colmap
             FilePath = path;
         }
 
-        public IEnumerable<Image> Images()
+        public IEnumerable<Image> GetImages()
         {
             using (BinaryReader reader = new BinaryReader(File.Open(FilePath, FileMode.Open)))
             {
