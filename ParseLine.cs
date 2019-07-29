@@ -27,8 +27,17 @@ namespace brab.colmap
             $@"(?<x>{FLOAT}) (?<y>{FLOAT}) (?<z>{FLOAT}) " +
             /* color */
             @"(?<r>\d*) (?<g>\d*) (?<b>\d*) " +
+            $@"(?<error>{FLOAT}) " +
             @".*",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        ///
+        /// parse integer number culturally independent
+        ///
+        static int ParseInt(string txt)
+        {
+            return int.Parse(txt, CultureInfo.InvariantCulture);
+        }
 
         ///
         /// parse integer number culturally independent
@@ -39,11 +48,20 @@ namespace brab.colmap
         }
 
         ///
+        /// parse integer number culturally independent
+        ///
+        static ulong ParseUlong(string txt)
+        {
+            return ulong.Parse(txt, CultureInfo.InvariantCulture);
+        }
+
+
+        ///
         /// parse decimal number culturally independent
         ///
-        static float ParseFloat(string txt)
+        static double ParseDouble(string txt)
         {
-            return float.Parse(txt, CultureInfo.InvariantCulture);
+            return double.Parse(txt, CultureInfo.InvariantCulture);
         }
 
         static string Get(GroupCollection groups, string name)
@@ -59,16 +77,16 @@ namespace brab.colmap
 
             var img = new Image();
 
-            img.Id = ParseUint(Get(groups, "id"));
-            img.qw = ParseFloat(Get(groups, "qw"));
-            img.qx = ParseFloat(Get(groups, "qx"));
-            img.qy = ParseFloat(Get(groups, "qy"));
-            img.qz = ParseFloat(Get(groups, "qz"));
-            img.tx = ParseFloat(Get(groups, "tx"));
-            img.ty = ParseFloat(Get(groups, "ty"));
-            img.tz = ParseFloat(Get(groups, "tz"));
+            img.Id = ParseInt(Get(groups, "id"));
+            img.qw = ParseDouble(Get(groups, "qw"));
+            img.qx = ParseDouble(Get(groups, "qx"));
+            img.qy = ParseDouble(Get(groups, "qy"));
+            img.qz = ParseDouble(Get(groups, "qz"));
+            img.tx = ParseDouble(Get(groups, "tx"));
+            img.ty = ParseDouble(Get(groups, "ty"));
+            img.tz = ParseDouble(Get(groups, "tz"));
 
-            img.CameraId = ParseUint(Get(groups, "cam"));
+            img.CameraId = ParseInt(Get(groups, "cam"));
             img.Name = Get(groups, "name");
 
             return img;
@@ -82,13 +100,18 @@ namespace brab.colmap
 
             var point = new Point3D();
 
-            point.Id = ParseUint(Get(groups, "id"));
-            point.x = ParseFloat(Get(groups, "x"));
-            point.y = ParseFloat(Get(groups, "y"));
-            point.z = ParseFloat(Get(groups, "z"));
+            point.Id = ParseUlong(Get(groups, "id"));
+
+            point.x = ParseDouble(Get(groups, "x"));
+            point.y = ParseDouble(Get(groups, "y"));
+            point.z = ParseDouble(Get(groups, "z"));
+
             point.r = ParseUint(Get(groups, "r"));
             point.g = ParseUint(Get(groups, "g"));
             point.b = ParseUint(Get(groups, "b"));
+
+            point.Error = ParseDouble(Get(groups, "error"));
+
 
             return point;
         }
